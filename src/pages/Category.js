@@ -114,7 +114,7 @@ export default class EditableTable extends React.Component {
                         <>
                         <Button type="default" title="Edit" onClick={()=> this.handleEdit(record)}><EditTwoTone /></Button>&nbsp;
                         <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record)}>
-                            <a><Button type="default" title="Delete"><DeleteTwoTone /></Button></a>
+                            <a href="/#"><Button type="default" title="Delete"><DeleteTwoTone /></Button></a>
                         </Popconfirm>
                         </>
                     ) : null,
