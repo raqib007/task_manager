@@ -20,7 +20,7 @@ function App() {
         } else {
             history.push("/");
         }
-    }, []);
+    }, [history]);
 
     function handleLogin(loggedUser) {
         console.log(loggedUser);
