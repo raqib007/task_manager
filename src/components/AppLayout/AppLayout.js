@@ -9,7 +9,7 @@ export default function AppLayout(props) {
         <Layout style={{height: "100vh"}} className="layout">
             <AppHeader/>
             <Content style={{padding: '0 50px',marginTop:20}}>
-                <div className="site-layout-background">
+                <div>
                     {props.children}
                 </div>
             </Content>

@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState, useRef, useContext} from 'react';
-import {Row, Col, Form, Input, Button, message, Table, Popconfirm, Modal} from "antd";
+import {Row, Col,Card, Form, Input, Button, message, Table, Popconfirm, Modal} from "antd";
 import {DeleteTwoTone,EditTwoTone} from '@ant-design/icons';
 
 const EditableContext = createContext(null);
@@ -264,6 +264,7 @@ export default class EditableTable extends React.Component {
             <>
                 <Row>
                     <Col span={16} offset={4}>
+                        <Card hoverable>
                         <div>
                             <Button
                                 onClick={this.handleAdd}
@@ -283,6 +284,7 @@ export default class EditableTable extends React.Component {
                                 loading={this.state.isLoading}
                             />
                         </div>
+                        </Card>
                     </Col>
                 </Row>
                 <Modal

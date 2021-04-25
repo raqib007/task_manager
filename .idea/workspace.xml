@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d63d26f-89a6-4aa9-9b8c-18d2cf10d0c9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppFooter/AppFooter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppFooter/AppFooter.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/AppLayout/AppLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppLayout/AppLayout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +59,8 @@
       <updated>1619199078313</updated>
       <workItem from="1619199082063" duration="15318000" />
       <workItem from="1619243426127" duration="744000" />
-      <workItem from="1619272961770" duration="11725000" />
+      <workItem from="1619272961770" duration="16335000" />
+      <workItem from="1619339980673" duration="12495000" />
     </task>
     <servers />
   </component>
@@ -69,5 +77,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
