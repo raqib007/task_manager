@@ -3,8 +3,10 @@ import {Row, Col, Card, Form, Input, DatePicker, Button, Select, message, Spin, 
 import useFetch from "../custom-hooks/useFetch";
 import Task from "../components/Task";
 import jwtDecode from "jwt-decode";
+import moment from "moment";
 
 export default function Home(props) {
+    const [modeEdit,setModeEdit] = React.useState(null);
     const [form] = Form.useForm();
     const [visible, setvisible] = React.useState(false);
 
@@ -19,7 +21,7 @@ export default function Home(props) {
     const [assignedTo, setAssignedTo] = React.useState([]);
     const [categories, setCategories] = React.useState([]);
     const [tasks, setTasks] = React.useState([]);
-    const {get, post, Delete, isLoading} = useFetch("https://node-task-manager-backend.herokuapp.com/api/");
+    const {get, post, put, Delete, isLoading} = useFetch("https://node-task-manager-backend.herokuapp.com/api/");
 
 
     React.useEffect(() => {
@@ -52,40 +54,69 @@ export default function Home(props) {
 
     }, []);
 
+    const refreshTaskList = () =>{
+        get("task")
+            .then(response => {
+                console.log(response);
+                setTasks(response);
+            }).catch(error => {
+            console.log(error);
+        });
+    }
+
     const onFinish = (values) => {
         console.log('Success:', values);
-        const key = 'updatable';
 
-        post('task', {
-            "name": values.name,
-            "category": values.category.split("|")[0],
-            "description": values.description,
-            "dueDate": values.dueDate,
-            "reminderDate": values.reminderDate,
-            "status": 0,
-            "assignedBy": user.id,
-            "assignedTo": values.assignedTo.split("|")[0]
-        }).then(response => {
-                console.log(response);
-                message.success('Task add success');
-                form.resetFields();
-                form.setFieldsValue({
-                    assignedBy: user.username
-                })
+        if(modeEdit !== null){
 
-                get("task")
-                    .then(response => {
-                        console.log(response);
-                        setTasks(response);
-                    }).catch(error => {
-                    console.log(error);
-                    message.error({content: 'Error Occured!', key, duration: 2});
-                });
-            }
-        ).catch(error => {
-            message.error('Error Occurred while adding task');
-        });
+            put('task/'+modeEdit._id, {
+                "name": values.name,
+                "category": values.category.split("|")[0],
+                "description": values.description,
+                "dueDate": values.dueDate,
+                "reminderDate": values.reminderDate,
+                "status": 0,
+                "assignedBy": user.id,
+                "assignedTo": values.assignedTo.split("|")[0]
+            }).then(response => {
+                    console.log(response);
+                    message.success('Task update success');
+                    form.resetFields();
+                    form.setFieldsValue({
+                        assignedBy: user.username
+                    })
 
+                    refreshTaskList();
+                    setModeEdit(null);
+                    onClose();
+                }
+            ).catch(error => {
+                message.error('Error Occurred while updating task');
+            });
+        }else{
+            post('task', {
+                "name": values.name,
+                "category": values.category.split("|")[0],
+                "description": values.description,
+                "dueDate": values.dueDate,
+                "reminderDate": values.reminderDate,
+                "status": 0,
+                "assignedBy": user.id,
+                "assignedTo": values.assignedTo.split("|")[0]
+            }).then(response => {
+                    console.log(response);
+                    message.success('Task add success');
+                    form.resetFields();
+                    form.setFieldsValue({
+                        assignedBy: user.username
+                    })
+
+                    refreshTaskList();
+                }
+            ).catch(error => {
+                message.error('Error Occurred while adding task');
+            });
+        }
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -94,14 +125,28 @@ export default function Home(props) {
 
     const showDrawer = () => {
         setvisible(true)
+        form.setFieldsValue({
+            assignedBy:user.username
+        })
     };
 
     const onClose = () => {
         setvisible(false);
+        form.resetFields();
     };
 
     function handleEditClick(task) {
         console.log(task);
+        form.setFieldsValue({
+            name: task.name,
+            category: task.category._id+"|"+task.category.name,
+            assignedTo: task.assignedTo._id+"|"+task.assignedTo.username,
+            dueDate: moment(task.dueDate),
+            reminderDate: moment(task.reminderDate),
+            description: task.description
+        });
+        showDrawer();
+        setModeEdit(task);
     }
 
     function handleDeleteClick(task) {
@@ -144,7 +189,7 @@ export default function Home(props) {
                 </Col>
             </Row></Spin>
             <Drawer
-                title="Create a new task"
+                title={modeEdit !== null ? 'Update Task' : 'Create New Task'}
                 width={720}
                 onClose={onClose}
                 visible={visible}
@@ -247,7 +292,7 @@ export default function Home(props) {
                         <Col span={4}>
                             <Form.Item>
                                 <Button type="primary" loading={isLoading} style={{marginTop:20}} htmlType="submit">
-                                    Save
+                                    {modeEdit !== null ? 'Update' : 'Save'}
                                 </Button>
                             </Form.Item>
                         </Col>

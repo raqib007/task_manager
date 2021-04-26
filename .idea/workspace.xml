@@ -4,9 +4,6 @@
     <list default="true" id="9d63d26f-89a6-4aa9-9b8c-18d2cf10d0c9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/AppHeader/AppHeader.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AppHeader/AppHeader.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Task.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Task.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/custom-hooks/useFetch.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/custom-hooks/useFetch.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home.js" afterDir="false" />
     </list>
@@ -60,7 +57,7 @@
       <workItem from="1619243426127" duration="744000" />
       <workItem from="1619272961770" duration="16335000" />
       <workItem from="1619339980673" duration="13760000" />
-      <workItem from="1619454292334" duration="13313000" />
+      <workItem from="1619454292334" duration="18668000" />
     </task>
     <servers />
   </component>
