@@ -1,6 +1,7 @@
 import React, {createContext, useEffect, useState, useRef, useContext} from 'react';
 import {Row, Col,Card, Form, Input, Button, message, Table, Popconfirm, Modal} from "antd";
 import {DeleteTwoTone,EditTwoTone} from '@ant-design/icons';
+import { FormInstance } from 'antd/lib/form';
 
 const EditableContext = createContext(null);
 
@@ -96,6 +97,7 @@ const tailLayout = {
 const baseUrl = "https://node-task-manager-backend.herokuapp.com/api/";
 
 export default class EditableTable extends React.Component {
+    formRef = React.createRef();
 
     constructor(props) {
         super(props);
@@ -147,6 +149,10 @@ export default class EditableTable extends React.Component {
 
     handleEdit = (record) => {
        console.log(record);
+       console.log(this.formRef);
+        // this.formRef.current.setFieldsValue({
+        //     category: record.name,
+        // });
     }
 
     handleDelete = (record) => {
@@ -296,10 +302,10 @@ export default class EditableTable extends React.Component {
                 >
                     <Form
                         {...layout}
-                        name="basic"
                         initialValues={{ remember: true }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
+                        ref={this.formRef} name="control-ref"
                     >
                         <Form.Item
                             label="Category"
