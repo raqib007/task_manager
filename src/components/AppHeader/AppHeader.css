@@ -13,3 +13,8 @@
     float: right;
     margin: 16px 0 16px 24px;
 }
+
+.ant-layout-header{
+    height: 52px;
+    line-height: 52px;
+}

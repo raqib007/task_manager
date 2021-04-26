@@ -16,7 +16,7 @@ function App() {
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            var segment = window.location.href.split("/");
+            let segment = window.location.href.split("/");
             //console.log(segment);
             if(segment[3] === ""){
                 history.push("/home");
@@ -26,7 +26,7 @@ function App() {
         } else {
             history.push("/");
         }
-    }, [history]);
+    }, []);
 
     function handleLogin(loggedUser) {
         console.log(loggedUser);

@@ -5,3 +5,7 @@
   padding: 24px;
   min-height: 280px;
 }
+
+.ant-form-item{
+  margin: 0 0 5px 0;
+}

@@ -47,7 +47,32 @@ export default function useFetch(baseUrl) {
                     reject(error);
                 });
         });
+
+
     }
 
-    return { get, post, isLoading };
+    function Delete(url) {
+        setLoading(true);
+        return new Promise((resolve, reject) => {
+            fetch(baseUrl + url, {
+                method: "delete",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data) {
+                        setLoading(false);
+                        return reject(data);
+                    }
+                    setLoading(false);
+                    resolve(data);
+                })
+                .catch(error => {
+                    setLoading(false);
+                    reject(error);
+                });
+        });
+
+    }
+
+    return { get, post, Delete, isLoading };
 };
