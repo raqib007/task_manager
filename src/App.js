@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import {useEffect} from 'react';
 import Login from "./pages/Login";
 import useFetch from "./custom-hooks/useFetch";
+import TaskDetails from "./pages/TaskDetails";
 
 function App() {
     const baseUrl = "https://node-task-manager-backend.herokuapp.com/api/";
@@ -64,6 +65,11 @@ function App() {
             <Route path="/contact">
                 <AppLayout>
                     <Contact/>
+                </AppLayout>
+            </Route>
+            <Route path="/task/:id" exact>
+                <AppLayout>
+                    <TaskDetails/>
                 </AppLayout>
             </Route>
             <Route>

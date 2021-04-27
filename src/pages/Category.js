@@ -126,12 +126,17 @@ export default class EditableTable extends React.Component {
             dataSource: [],
             count: 0,
             isLoading: false,
-            modal2Visible: false
+            modal2Visible: false,
+            editMode: null
         };
     }
 
     componentDidMount() {
         this.setState({isLoading: true});
+        this.fetchCategory();
+    }
+
+    fetchCategory = ()=>{
         fetch(baseUrl + 'category')
             .then(response => response.json())
             .then(data => {
@@ -150,9 +155,14 @@ export default class EditableTable extends React.Component {
     handleEdit = (record) => {
        console.log(record);
        console.log(this.formRef);
-        // this.formRef.current.setFieldsValue({
-        //     category: record.name,
-        // });
+       if(this.formRef.current !== null){
+           this.setState({editMode:record});
+           this.formRef.current.setFieldsValue({
+               category: record.name,
+           });
+           this.setModal2Visible(true);
+       }
+
     }
 
     handleDelete = (record) => {
@@ -224,40 +234,62 @@ export default class EditableTable extends React.Component {
             console.log('Success:', values);
 
             this.setState({isLoading: true});
-            fetch(baseUrl + 'category', {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({name:values.category})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        console.log(data);
-                        this.setState({isLoading: false});
-
-                        const {count, dataSource} = this.state;
-                        const newData = {
-                            key: count,
-                            _id: data.data._id,
-                            name: data.data.name
-                        };
-
-                        this.setState({
-                            dataSource: [...dataSource, newData],
-                            count: count + 1,
-                        });
-
-                        message.success('Category add success');
-                        this.setModal2Visible(false);
-                    }
-
+            if(this.state.editMode !== null){
+                fetch(baseUrl + 'category/'+this.state.editMode._id, {
+                    method: "put",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({name:values.category})
                 })
-                .catch(error => {
-                    this.setState({isLoading: false});
-                    message.error('An error occurred while category');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({isLoading: false});
+                        message.success('Category update success');
+                        this.setModal2Visible(false);
+                        this.fetchCategory();
+                    })
+                    .catch(error => {
+                        this.setState({isLoading: false});
+                        message.success('Category update failed');
+                        console.log(error);
+                    });
+            }else{
+                fetch(baseUrl + 'category', {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({name:values.category})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            console.log(data);
+                            this.setState({isLoading: false});
+
+                            const {count, dataSource} = this.state;
+                            const newData = {
+                                key: count,
+                                _id: data.data._id,
+                                name: data.data.name
+                            };
+
+                            this.setState({
+                                dataSource: [...dataSource, newData],
+                                count: count + 1,
+                            });
+
+                            message.success('Category add success');
+                            this.setModal2Visible(false);
+                        }
+                    })
+                    .catch(error => {
+                        this.setState({isLoading: false});
+                        message.error('An error occurred while category');
+                    });
+            }
+
 
         };
 
@@ -266,15 +298,23 @@ export default class EditableTable extends React.Component {
             message.error('Field can not be empty!');
         };
 
+        const onModalClose = () =>{
+            if(this.state.editMode !== null){
+                console.log('resetting');
+                this.formRef.current.resetFields();
+                this.setState({editMode:null});
+            }
+        }
+
         return (
             <>
                 <Row>
                     <Col span={16} offset={4}>
-                        <Card hoverable>
+                        <Card style={{overflowY:'scroll',height: "calc( 100vh - 142px)"}}>
                         <div>
                             <Button
                                 onClick={this.handleAdd}
-                                type="default"
+                                type="primary"
                                 style={{
                                     marginBottom: 16,
                                 }}
@@ -282,6 +322,7 @@ export default class EditableTable extends React.Component {
                                 Add Category
                             </Button>
                             <Table
+
                                 components={components}
                                 rowClassName={() => 'editable-row'}
                                 bordered
@@ -294,9 +335,11 @@ export default class EditableTable extends React.Component {
                     </Col>
                 </Row>
                 <Modal
-                    title="Add New Category!!"
+                    title={this.state.editMode !== null ? 'Edit Category' : 'Add new category'}
                     centered
+                    forceRender={true}
                     visible={this.state.modal2Visible}
+                    afterClose={onModalClose}
                     onCancel={() => this.setModal2Visible(false)}
                     okButtonProps={{style:{display:"none"}}}
                 >
@@ -317,7 +360,7 @@ export default class EditableTable extends React.Component {
 
                         <Form.Item {...tailLayout}>
                             <Button type="primary" loading={this.state.isLoading} htmlType="submit">
-                                Save
+                                {this.state.editMode !== null ? 'Update' : 'Save'}
                             </Button>
                         </Form.Item>
                     </Form>

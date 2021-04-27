@@ -4,6 +4,7 @@ import useFetch from "../custom-hooks/useFetch";
 import Task from "../components/Task";
 import jwtDecode from "jwt-decode";
 import moment from "moment";
+import {useHistory} from 'react-router-dom';
 
 export default function Home(props) {
     const [modeEdit,setModeEdit] = React.useState(null);
@@ -22,7 +23,7 @@ export default function Home(props) {
     const [categories, setCategories] = React.useState([]);
     const [tasks, setTasks] = React.useState([]);
     const {get, post, put, Delete, isLoading} = useFetch("https://node-task-manager-backend.herokuapp.com/api/");
-
+    const history = useHistory();
 
     React.useEffect(() => {
         get("category")
@@ -46,7 +47,7 @@ export default function Home(props) {
         get("task")
             .then(response => {
                 console.log(response);
-                setTasks(response);
+                setTasks(response.filter(task=> task.status === 0));
             }).catch(error => {
             console.log(error);
         });
@@ -58,7 +59,7 @@ export default function Home(props) {
         get("task")
             .then(response => {
                 console.log(response);
-                setTasks(response);
+                setTasks(response.filter(task=> task.status === 0));
             }).catch(error => {
             console.log(error);
         });
@@ -135,6 +136,11 @@ export default function Home(props) {
         form.resetFields();
     };
 
+    function handleViewClick(id){
+        console.log(id);
+        history.push(`/task/${id}`);
+    }
+
     function handleEditClick(task) {
         console.log(task);
         form.setFieldsValue({
@@ -168,6 +174,20 @@ export default function Home(props) {
         });
     }
 
+    function handleResolveClick(task){
+        console.log(task);
+        put('task/'+task._id, {
+            "status": 1,
+        }).then(response => {
+                console.log(response);
+                message.success('Task Resolved');
+                refreshTaskList();
+            }
+        ).catch(error => {
+            message.error('Error Occurred while updating task');
+        });
+    }
+
     return (
         <>
             <Button type="primary" style={{margin: "0 0 10px 10px "}} onClick={() => showDrawer()}>Add New Task</Button>
@@ -182,6 +202,8 @@ export default function Home(props) {
                                   task={task}
                                   onEditClick={handleEditClick}
                                   onDeleteClick={handleDeleteClick}
+                                  onResolveClick={handleResolveClick}
+                                  onViewClick={handleViewClick}
                             />
                         ))}
 
