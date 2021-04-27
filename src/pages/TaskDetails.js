@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 import useFetch from "../custom-hooks/useFetch";
 import {Spin, Row, Col, Card, Form, Input, Select, DatePicker, Button, message, Divider} from "antd";
 import moment from "moment";
@@ -21,12 +21,12 @@ export default function TaskDetails(props) {
 
                 form.setFieldsValue({
                     name: response.name,
-                    category: response.category._id+"|"+response.category.name,
+                    category: response.category._id + "|" + response.category.name,
                     assignedBy: response.assignedBy.username,
-                    assignedTo: response.assignedTo._id+"|"+response.assignedTo.username,
+                    assignedTo: response.assignedTo._id + "|" + response.assignedTo.username,
                     dueDate: moment(response.dueDate),
-                    reminderDate:moment(response.reminderDate),
-                    description:response.description
+                    reminderDate: moment(response.reminderDate),
+                    description: response.description
 
                 });
             }).catch(error => {
@@ -48,9 +48,6 @@ export default function TaskDetails(props) {
             }).catch(error => {
             console.log(error);
         });
-
-
-
 
     }, []);
 
@@ -104,7 +101,7 @@ export default function TaskDetails(props) {
                                     label="Assigned By"
                                     name="assignedBy"
                                 >
-                                    <Input  readOnly/>
+                                    <Input readOnly/>
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
@@ -152,12 +149,17 @@ export default function TaskDetails(props) {
                             </Col>
                         </Row>
                         <Row gutter={16}>
-                            <Col span={4}>
+                            <Col span={8}>
                                 <Form.Item>
                                     <Button type="primary" loading={isLoading} style={{marginTop: 20}}
                                             htmlType="submit">
                                         Save
                                     </Button>
+
+                                    <Link to="/home"><Button type="default" style={{marginTop: 20, marginLeft: 10}}
+                                                        htmlType="submit">
+                                        Back
+                                    </Button></Link>
                                 </Form.Item>
                             </Col>
                         </Row>
