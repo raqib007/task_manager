@@ -1,11 +1,22 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Form, Input, Checkbox, Button, Card, Row, Col} from "antd";
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
+import {AuthContext} from "../context-provider/userContext";
+import {useHistory } from 'react-router-dom';
 
 export default function Login(props) {
+    const auth = useContext(AuthContext);
+    const history = useHistory();
+
     const onFinish = (values) => {
         props.onLoginClick(values);
     };
+
+    useEffect(()=>{
+        if(auth.user !== null){
+           history.push("/home");
+        }
+    },[]);
 
     return (
         <Row style={{display: 'flex', alignItems: 'center', height: '100vh',backgroundColor:'#f5f5f5'}}>

@@ -4,11 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
+import {ProvideAuth} from "./context-provider/userContext";
+
 
 ReactDOM.render(
-    <BrowserRouter>
-    <App/>
-    </BrowserRouter>,
+    <ProvideAuth>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </ProvideAuth>,
     document.getElementById('root')
 );
 

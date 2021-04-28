@@ -1,33 +1,33 @@
 import './App.css';
-import {Switch, Route, useHistory} from "react-router-dom";
+import {Switch, Route, useHistory, Redirect, useLocation} from "react-router-dom";
 import AppLayout from "./components/AppLayout/AppLayout";
 import Category from "./pages/Category";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
-import {useEffect} from 'react';
+import {useEffect, useContext} from 'react';
 import Login from "./pages/Login";
 import useFetch from "./custom-hooks/useFetch";
 import TaskDetails from "./pages/TaskDetails";
+import {AuthContext} from "./context-provider/userContext";
+import {message} from "antd";
 
 function App() {
+    const auth = useContext(AuthContext);
     const baseUrl = "https://node-task-manager-backend.herokuapp.com/api/";
     const history = useHistory();
     const {post, isLoading} = useFetch(baseUrl);
+    const location = useLocation();
 
-    useEffect(() => {
-        if (localStorage.getItem('token')) {
-            let segment = window.location.href.split("/");
-            //console.log(segment);
-            if(segment[3] === ""){
-                history.push("/home");
-            }else {
-                history.push(`/${segment[3]}`);
-            }
-        } else {
-            history.push("/");
-        }
-    }, []);
+    function ProtectedRoute({children, ...rest}) {
+        return (
+            <Route {...rest}
+                   render={({location}) =>
+                       auth.user ? (children) : (<Redirect to={{pathname: "/", state: {from: location}}}/>)
+                   }
+            />
+        )
+    }
 
     function handleLogin(loggedUser) {
         console.log(loggedUser);
@@ -36,9 +36,20 @@ function App() {
         }).then(response => {
             console.log(response);
             if (response?.token) {
-                localStorage.setItem("token", JSON.stringify(response.token));
-                history.push('/home');
+                localStorage.setItem('token',JSON.stringify(response.token));
+                auth.setAuth().then(()=>{
+                    let { from } = location.state || { from: { pathname: "/home" } };
+                    console.log(from);
+                    history.replace(from);
+                });
+
+            }else{
+                message.error(response.message);
             }
+
+        }).catch(error => {
+            console.log(error);
+
         });
     }
 
@@ -47,31 +58,31 @@ function App() {
             <Route path="/" exact>
                 <Login onLoginClick={handleLogin} isLoading={isLoading}/>
             </Route>
-            <Route path="/home">
+            <ProtectedRoute path="/home">
                 <AppLayout>
                     <Home/>
                 </AppLayout>
-            </Route>
-            <Route path="/categories">
+            </ProtectedRoute>
+            <ProtectedRoute path="/categories">
                 <AppLayout>
                     <Category/>
                 </AppLayout>
-            </Route>
-            <Route path="/about">
+            </ProtectedRoute>
+            <ProtectedRoute path="/about">
                 <AppLayout>
                     <About/>
                 </AppLayout>
-            </Route>
-            <Route path="/contact">
+            </ProtectedRoute>
+            <ProtectedRoute path="/contact">
                 <AppLayout>
                     <Contact/>
                 </AppLayout>
-            </Route>
-            <Route path="/task/:id" exact>
+            </ProtectedRoute>
+            <ProtectedRoute path="/task/:id" exact>
                 <AppLayout>
                     <TaskDetails/>
                 </AppLayout>
-            </Route>
+            </ProtectedRoute>
             <Route>
                 <h3 style={{display: "flex", justifyContent: "center"}}>404 Not Found</h3>
             </Route>

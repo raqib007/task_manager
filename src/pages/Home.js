@@ -1,23 +1,17 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Row, Col, Card, Form, Input, DatePicker, Button, Select, message, Spin, Drawer} from 'antd';
 import useFetch from "../custom-hooks/useFetch";
 import Task from "../components/Task";
 import jwtDecode from "jwt-decode";
 import moment from "moment";
 import {useHistory} from 'react-router-dom';
+import {AuthContext} from "../context-provider/userContext";
 
 export default function Home(props) {
+    const auth = useContext(AuthContext);
     const [modeEdit,setModeEdit] = React.useState(null);
     const [form] = Form.useForm();
     const [visible, setvisible] = React.useState(false);
-
-    const [user, setUser] = React.useState(() => {
-        let user = window.localStorage.getItem('token');
-        form.setFieldsValue({
-            assignedBy: jwtDecode(user).username
-        })
-        return user !== null ? jwtDecode(user) : {};
-    });
 
     const [assignedTo, setAssignedTo] = React.useState([]);
     const [categories, setCategories] = React.useState([]);
@@ -37,9 +31,7 @@ export default function Home(props) {
         get("v1/users")
             .then(response => {
                 console.log(response);
-                console.log(user);
-
-                setAssignedTo(response.filter(at => at.username !== user.username));
+                setAssignedTo(response.filter(at => at.username !== auth.user.username));
             }).catch(error => {
             console.log(error);
         });
@@ -51,6 +43,10 @@ export default function Home(props) {
             }).catch(error => {
             console.log(error);
         });
+
+        form.setFieldsValue({
+            assignedBy: auth.user.username
+        })
 
 
     }, []);
@@ -77,14 +73,14 @@ export default function Home(props) {
                 "dueDate": values.dueDate,
                 "reminderDate": values.reminderDate,
                 "status": 0,
-                "assignedBy": user.id,
+                "assignedBy": auth.user.id,
                 "assignedTo": values.assignedTo.split("|")[0]
             }).then(response => {
                     console.log(response);
                     message.success('Task update success');
                     form.resetFields();
                     form.setFieldsValue({
-                        assignedBy: user.username
+                        assignedBy: auth.user.username
                     })
 
                     refreshTaskList();
@@ -102,14 +98,14 @@ export default function Home(props) {
                 "dueDate": values.dueDate,
                 "reminderDate": values.reminderDate,
                 "status": 0,
-                "assignedBy": user.id,
+                "assignedBy": auth.user.id,
                 "assignedTo": values.assignedTo.split("|")[0]
             }).then(response => {
                     console.log(response);
                     message.success('Task add success');
                     form.resetFields();
                     form.setFieldsValue({
-                        assignedBy: user.username
+                        assignedBy: auth.user.username
                     })
 
                     refreshTaskList();
@@ -127,7 +123,7 @@ export default function Home(props) {
     const showDrawer = () => {
         setvisible(true)
         form.setFieldsValue({
-            assignedBy:user.username
+            assignedBy:auth.user.username
         })
     };
 
@@ -263,7 +259,7 @@ export default function Home(props) {
                                 label="Assigned By"
                                 name="assignedBy"
                             >
-                                <Input value={user?.username} readOnly/>
+                                <Input value={auth.user?.username} readOnly/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
