@@ -189,7 +189,7 @@ export default function Home(props) {
             <Button type="primary" style={{margin: "0 0 10px 10px "}} onClick={() => showDrawer()}>Add New Task</Button>
             <Spin spinning={isLoading}><Row>
                 <Col md={{span: 24}}
-                     style={{overflowY: "scroll", height: "calc( 100vh - 151px)"}}>
+                     style={{overflowY: "scroll", height: "calc( 100vh - 181px)"}}>
                     <Row style={{padding: 5}}>
 
                         {tasks.map(task => (

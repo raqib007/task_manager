@@ -1,13 +1,14 @@
 import React, {useContext} from 'react';
-import {Layout, Menu} from "antd";
+import {Layout, Menu, Icon} from "antd";
 import "./AppHeader.css";
-import {NavLink,useHistory} from "react-router-dom";
+import {NavLink,useHistory,useLocation} from "react-router-dom";
 import {AuthContext} from "../../context-provider/userContext";
 
 export default function AppHeader(props) {
     const auth = useContext(AuthContext);
     const {Header} = Layout;
     const history = useHistory();
+    const location = useLocation();
 
     function handleLogoutClick(){
         if(localStorage.getItem('token')){
@@ -17,7 +18,6 @@ export default function AppHeader(props) {
             })
 
         }
-
     }
 
     return (
@@ -25,28 +25,28 @@ export default function AppHeader(props) {
             <div className="logo">
                 TaskManager
             </div>
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-                <Menu.Item key="1">
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[location.pathname]}>
+                <Menu.Item key="/home">
                     <NavLink to="/home">
                         Home
                     </NavLink>
                 </Menu.Item>
-                <Menu.Item key="2">
+                <Menu.Item key="/categories">
                     <NavLink to="/categories">
                         Categories
                     </NavLink>
                 </Menu.Item>
-                <Menu.Item key="3">
+                <Menu.Item key="/about">
                     <NavLink to="/about">
                         About
                     </NavLink>
                 </Menu.Item>
-                <Menu.Item key="4">
+                <Menu.Item key="/contact">
                     <NavLink to="/contact">
                         Contact
                     </NavLink>
                 </Menu.Item>
-                <Menu.Item key="5" style={{float:'right'}} onClick={()=>handleLogoutClick()}>
+                <Menu.Item style={{float:'right'}} onClick={()=>handleLogoutClick()}>
                         Logout
                 </Menu.Item>
             </Menu>
