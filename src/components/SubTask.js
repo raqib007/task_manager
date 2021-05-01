@@ -20,7 +20,7 @@ export default function SubTask(props) {
                           onChange={(e)=>props.onSubTaskCheckChange(props.stask)}
                 />
             </td>
-            <td style={{width: "70%"}}>
+            <td style={{width: "60%"}}>
                 {edit ? (<Input value={props.stask.name}
                                 onChange={(e) => props.onSubtaskChange(e, props.stask)}/>) : <span style={styles}>{props.stask.name}</span>}
             </td>

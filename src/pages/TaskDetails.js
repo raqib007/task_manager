@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, Link} from 'react-router-dom';
 import useFetch from "../custom-hooks/useFetch";
-import {Spin, Row, Col, Card, Form, Input, Select, DatePicker, Button, message, Divider} from "antd";
+import {Spin, Row, Col, Card, Form, Input, Select, DatePicker, Button, message, Divider, Tabs} from "antd";
 import moment from "moment";
 import SubTask from "../components/SubTask";
+import TaskAttachment from "../components/TaskAttachment";
 
 export default function TaskDetails(props) {
     const [form] = Form.useForm();
@@ -12,6 +13,7 @@ export default function TaskDetails(props) {
     const [subTask, setSubTask] = useState([]);
     const [assignedTo, setAssignedTo] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [files, setFiles] = useState([]);
     const {get, put, post, Delete, isLoading} = useFetch('https://node-task-manager-backend.herokuapp.com/api/');
 
     useEffect(() => {
@@ -52,6 +54,30 @@ export default function TaskDetails(props) {
             console.log(error);
         });
 
+        get(`upload/${params.id}`)
+            .then(response => {
+                // console.log(response);
+                let newFileList = response.map((file, index) => {
+                    return Object.assign({},
+                        {
+                            uid: -(index + 1),
+                            name: file?.original_filename,
+                            status: 'done',
+                            url: file?.secure_url,
+                            thumbUrl: file?.secure_url,
+                            width: file?.width,
+                            height: file?.height,
+                            format: file?.format,
+                            id: file?._id
+                        }
+                    )
+                });
+                console.log(newFileList);
+                setFiles(newFileList);
+            }).catch(error => {
+            console.log(error);
+        });
+
     }, []);
 
     const onFinish = (values) => {
@@ -62,15 +88,19 @@ export default function TaskDetails(props) {
         console.log('Failed:', errorInfo);
     };
 
+    function callback(key) {
+        console.log(key);
+    }
+
     function handleAddSubTask() {
         console.log("add task");
-        let newSubTask = {name: 'Enter Subtask here', status: false,_id:Math.random()+new Date().getMilliseconds()};
+        let newSubTask = {name: 'Enter Subtask here', status: false, _id: Math.random() + new Date().getMilliseconds()};
         setSubTask([...subTask, newSubTask]);
     }
 
     function handleEditSubTask(stask) {
         console.log("edit task", stask);
-        if('id' in stask){
+        if ('id' in stask) {
             console.log('edit');
             put(`subTasks/${stask.id}`, {
                 name: stask.name
@@ -81,17 +111,18 @@ export default function TaskDetails(props) {
                 .catch(error => {
                     console.log(error);
                 })
-        }else{
+        } else {
             console.log('new');
-            put(`task/addNewTask/${task.id}`, {subTasks:[{
+            put(`task/addNewTask/${task.id}`, {
+                subTasks: [{
                     name: stask.name,
                     status: stask.status
                 }]
             })
                 .then(response => {
                     console.log(response?.data[0]);
-                    let newList = subTask.slice(0,subTask.length-1);
-                    setSubTask([...newList,response?.data[0]]);
+                    let newList = subTask.slice(0, subTask.length - 1);
+                    setSubTask([...newList, response?.data[0]]);
                     message.success(response.message);
                 })
                 .catch(error => {
@@ -102,7 +133,7 @@ export default function TaskDetails(props) {
 
     function handleDeleteSubTask(task) {
         console.log("delete task");
-        if('id' in task){
+        if ('id' in task) {
             Delete(`subTasks/${task.id}`)
                 .then(response => {
                     message.success(response.message);
@@ -110,7 +141,7 @@ export default function TaskDetails(props) {
                     setSubTask(newList);
                 })
                 .catch(error => message.error('Error occurred while deleting'));
-        }else{
+        } else {
             const newList = subTask.filter(st => (st.id !== task.id));
             setSubTask(newList);
         }
@@ -144,19 +175,73 @@ export default function TaskDetails(props) {
         put(`subTasks/${task.id}`, {
             status: !task.status
         })
-        .then(response => {
-           message.success(response.message);
-        })
-        .catch(error => {
-            console.log(error);
-        })
+            .then(response => {
+                message.success(response.message);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    function handleFileUpload(data) {
+        const {onSuccess, onError, file, onProgress, action} = data;
+        console.log(action);
+        const fmData = new FormData();
+        const config = {
+            headers: {"content-type": "multipart/form-data"},
+            onUploadProgress: event => {
+                onProgress({percent: (event.loaded / event.total) * 100});
+            }
+        };
+        fmData.append("image", file);
+        fetch(action, { // Your POST endpoint
+            method: 'POST',
+            config,
+            body: fmData // This is your file object
+        }).then(
+            response => response.json() // if the response is a JSON object
+        ).then(
+            success => {
+                console.log(success);
+                let uploadedFile= Object.assign({},
+                    {
+                        uid: -(files.length),
+                        name: success.data?.original_filename,
+                        status: 'done',
+                        url: success.data?.secure_url,
+                        thumbUrl: success.data?.secure_url,
+                        width: success.data?.width,
+                        height: success.data?.height,
+                        format: success.data?.format,
+                        id: success.data?._id
+                    });
+                setFiles([...files,uploadedFile]);
+                onSuccess("Ok");
+            } // Handle the success response object
+        ).catch(
+            error => {
+                console.log(error); // Handle the error response object
+                onError({error})
+            }
+        );
+    }
+
+    function handleFileRemove(data){
+       console.log(data);
+       Delete(`upload/${data.id}`)
+           .then(response=>{
+               message.success(response.message);
+           })
+           .catch(error=>{
+               message.error('Error occurred while deleting image');
+               console.log(error);
+           })
     }
 
     return (
         <Spin spinning={isLoading}>
             <Row style={{overflowY: "scroll", height: "calc(100vh - 151px)"}}>
-                <Col span={12} offset={6}>
-
+                <Col span={10} offset={2}>
                     <Form layout="vertical"
                           form={form}
                           onFinish={onFinish}
@@ -241,45 +326,61 @@ export default function TaskDetails(props) {
                                     </Form.Item>
                                 </Col>
                             </Row>
-                        </Card>
-                        {/*subtask*/}
-                        <h2>Sub Tasks</h2>
-                        <Card style={{borderColor: "#1890ff"}}>
-                            <Button type="primary" style={{margin: "0 0 10px 10px "}}
-                                    onClick={() => handleAddSubTask()}>Add New Task</Button>
-                            <table width={"100%"}>
-                                <tbody>
-                                {subTask && subTask.map((st, index) =>
-                                    <SubTask key={st._id} stask={st}
-                                             onEditSubTask={handleEditSubTask}
-                                             onDeleteSubTask={handleDeleteSubTask}
-                                             onSubtaskChange={handleSubtaskChange}
-                                             onSubTaskCheckChange={handleSubTaskCheckChange}
-                                             sl={index + 1}/>)}
-                                </tbody>
-                            </table>
-                        </Card>
-                        {/*subtask end*/}
-                        <Row gutter={16}>
-                            <Col span={8}>
-                                <Form.Item>
-                                    <Button type="primary" loading={isLoading} style={{marginTop: 20}}
-                                            htmlType="submit">
-                                        Save
-                                    </Button>
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Form.Item>
+                                        <Button type="primary" loading={isLoading} style={{marginTop: 20}}
+                                                htmlType="submit">
+                                            Save
+                                        </Button>
 
-                                    <Link to="/home"><Button type="default" style={{marginTop: 20, marginLeft: 10}}
-                                                             htmlType="submit">
-                                        Back
-                                    </Button></Link>
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                                        <Link to="/home"><Button type="default" style={{marginTop: 20, marginLeft: 10}}
+                                                                 htmlType="submit">
+                                            Back
+                                        </Button></Link>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
                     </Form>
-
+                </Col>
+                <Col span={10} offset={1}>
+                    <Tabs onChange={callback} style={{margin:0}}>
+                        <Tabs.TabPane tab="Sub Tasks" key="1" style={{borderColor: "#1890ff"}}>
+                            {/*subtask*/}
+                            <Card>
+                                <Button type="primary" style={{margin: "0 0 10px 10px "}}
+                                        onClick={() => handleAddSubTask()}>Add New Task</Button>
+                                <table width={"100%"}>
+                                    <tbody>
+                                    {subTask && subTask.map((st, index) =>
+                                        <SubTask key={st._id} stask={st}
+                                                 onEditSubTask={handleEditSubTask}
+                                                 onDeleteSubTask={handleDeleteSubTask}
+                                                 onSubtaskChange={handleSubtaskChange}
+                                                 onSubTaskCheckChange={handleSubTaskCheckChange}
+                                                 sl={index + 1}/>)}
+                                    </tbody>
+                                </table>
+                            </Card>
+                            {/*subtask end*/}
+                        </Tabs.TabPane>
+                        <Tabs.TabPane tab="Attachment" key="2">
+                            {/*attachment*/}
+                            <Card>
+                                <TaskAttachment fileList={files}
+                                                taskid={params.id}
+                                                onFileUpload={handleFileUpload}
+                                                onRemoveFile={handleFileRemove}
+                                />
+                            </Card>
+                            {/*attachment end*/}
+                        </Tabs.TabPane>
+                    </Tabs>
                 </Col>
             </Row>
         </Spin>
-    );
+    )
+        ;
 }
 
