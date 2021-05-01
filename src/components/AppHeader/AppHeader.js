@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Layout, Menu, Icon} from "antd";
+import {Layout, Menu} from "antd";
 import "./AppHeader.css";
 import {NavLink,useHistory,useLocation} from "react-router-dom";
 import {AuthContext} from "../../context-provider/userContext";
@@ -16,7 +16,6 @@ export default function AppHeader(props) {
             auth.clearAuth().then(()=>{
                 history.push("/");
             })
-
         }
     }
 
