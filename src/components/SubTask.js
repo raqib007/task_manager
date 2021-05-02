@@ -24,15 +24,16 @@ export default function SubTask(props) {
                 {edit ? (<Input value={props.stask.name}
                                 onChange={(e) => props.onSubtaskChange(e, props.stask)}/>) : <span style={styles}>{props.stask.name}</span>}
             </td>
-            <td>{edit && (<><Button onClick={() => {
+            <td>{edit && (<>
+            <Button onClick={() => {
                 setEdit(false);
                 props.onEditSubTask(props.stask)
             }}>
                 <CheckCircleTwoTone/>
             </Button>
-                <Button onClick={() => setEdit(false)}>
-                    <CloseCircleTwoTone/>
-                </Button>
+            <Button onClick={() => setEdit(false)}>
+                <CloseCircleTwoTone/>
+            </Button>
             </>)
             }
                 {!edit && <Button onClick={() => {

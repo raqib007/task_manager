@@ -2,7 +2,6 @@ import React, {useContext} from 'react';
 import {Row, Col, Card, Form, Input, DatePicker, Button, Select, message, Spin, Drawer} from 'antd';
 import useFetch from "../custom-hooks/useFetch";
 import Task from "../components/Task";
-import jwtDecode from "jwt-decode";
 import moment from "moment";
 import {useHistory} from 'react-router-dom';
 import {AuthContext} from "../context-provider/userContext";
@@ -89,6 +88,7 @@ export default function Home(props) {
                 }
             ).catch(error => {
                 message.error('Error Occurred while updating task');
+
             });
         }else{
             post('task', {
@@ -129,6 +129,7 @@ export default function Home(props) {
 
     const onClose = () => {
         setvisible(false);
+        setModeEdit(null);
         form.resetFields();
     };
 

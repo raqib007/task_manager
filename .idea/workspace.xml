@@ -4,6 +4,9 @@
     <list default="true" id="9d63d26f-89a6-4aa9-9b8c-18d2cf10d0c9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SubTask.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SubTask.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/TaskAttachment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TaskAttachment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/TaskDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/TaskDetails.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +20,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -65,7 +68,9 @@
       <workItem from="1619554491600" duration="1011000" />
       <workItem from="1619588839141" duration="2411000" />
       <workItem from="1619591326040" duration="5049000" />
-      <workItem from="1619860573139" duration="21727000" />
+      <workItem from="1619860573139" duration="21988000" />
+      <workItem from="1619931624876" duration="2647000" />
+      <workItem from="1619956976617" duration="9893000" />
     </task>
     <servers />
   </component>

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useParams, Link} from 'react-router-dom';
 import useFetch from "../custom-hooks/useFetch";
-import {Spin, Row, Col, Card, Form, Input, Select, DatePicker, Button, message, Divider, Tabs} from "antd";
+import {Spin, Row, Col, Card, Form, Input, Select, DatePicker, Button, message, Tabs} from "antd";
 import moment from "moment";
 import SubTask from "../components/SubTask";
 import TaskAttachment from "../components/TaskAttachment";
+import './css/TaskDetails.css';
 
 export default function TaskDetails(props) {
     const [form] = Form.useForm();
@@ -216,7 +217,7 @@ export default function TaskDetails(props) {
                         id: success.data?._id
                     });
                 setFiles([...files,uploadedFile]);
-                onSuccess("Ok");
+                onSuccess(uploadedFile);
             } // Handle the success response object
         ).catch(
             error => {
@@ -227,15 +228,28 @@ export default function TaskDetails(props) {
     }
 
     function handleFileRemove(data){
-       console.log(data);
-       Delete(`upload/${data.id}`)
-           .then(response=>{
-               message.success(response.message);
-           })
-           .catch(error=>{
-               message.error('Error occurred while deleting image');
-               console.log(error);
-           })
+       // console.log(data);
+       if('id' in data){
+           Delete(`upload/${data.id}`)
+               .then(response=>{
+                   message.success(response.message);
+                   setFiles(files.filter(f=>(f.id !== data.id)));
+               })
+               .catch(error=>{
+                   message.error('Error occurred while deleting image');
+                   console.log(error);
+               })
+       }
+
+    }
+
+    function handleFileChange(fileLists){
+        if(fileLists.file.status === 'done'){
+            const {file} = fileLists;
+            file.name = file.response.data.original_filename;
+            file.url = file.response.data.secure_url;
+            file.id = file.response.data.id;
+        }
     }
 
     return (
@@ -372,6 +386,7 @@ export default function TaskDetails(props) {
                                                 taskid={params.id}
                                                 onFileUpload={handleFileUpload}
                                                 onRemoveFile={handleFileRemove}
+                                                onFileChange={handleFileChange}
                                 />
                             </Card>
                             {/*attachment end*/}
