@@ -3,11 +3,12 @@ import {Button, Card, Col} from "antd";
 import moment from 'moment';
 import {EditOutlined, DeleteOutlined, EyeOutlined} from '@ant-design/icons';
 import {Link} from 'react-router-dom';
+import classes from './Task.css';
 
 export default function Task(props) {
     const isOverDue = moment().isAfter(props.task.dueDate);
 
-    const styles = isOverDue ? {margin:4,borderColor:"#FF4D4F"} : {margin:4,borderColor:"#1890ff"};
+    const styles = isOverDue ? {margin:4} : {margin:4};
 
     function handleResolveClick(task){
         props.onResolveClick(task);
@@ -19,6 +20,7 @@ export default function Task(props) {
                   hoverable
                   title={props.task.name}
                   style={styles}
+                  className={classes.cardShadow}
                   actions={[
                       <EyeOutlined key="view" onClick={() => props.onViewClick(props.task._id)}/>,
                       <EditOutlined key="edit" onClick={() => props.onEditClick(props.task)}/>,

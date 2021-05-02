@@ -62,10 +62,10 @@ export default function TaskDetails(props) {
                     return Object.assign({},
                         {
                             uid: -(index + 1),
-                            name: file?.original_filename,
+                            name: file?.name,
                             status: 'done',
-                            url: file?.secure_url,
-                            thumbUrl: file?.secure_url,
+                            url: file?.thumbUrl,
+                            thumbUrl: file?.thumbUrl,
                             width: file?.width,
                             height: file?.height,
                             format: file?.format,
@@ -102,7 +102,7 @@ export default function TaskDetails(props) {
     function handleEditSubTask(stask) {
         console.log("edit task", stask);
         if ('id' in stask) {
-            console.log('edit');
+            // console.log('edit');
             put(`subTasks/${stask.id}`, {
                 name: stask.name
             })
@@ -114,16 +114,15 @@ export default function TaskDetails(props) {
                 })
         } else {
             console.log('new');
-            put(`task/addNewTask/${task.id}`, {
-                subTasks: [{
-                    name: stask.name,
-                    status: stask.status
-                }]
+            post(`subTasks`, {
+                name: stask.name,
+                status: stask.status,
+                taskId: params.id
             })
                 .then(response => {
-                    console.log(response?.data[0]);
+                    console.log(response?.data);
                     let newList = subTask.slice(0, subTask.length - 1);
-                    setSubTask([...newList, response?.data[0]]);
+                    setSubTask([...newList, response?.data]);
                     message.success(response.message);
                 })
                 .catch(error => {
@@ -204,7 +203,7 @@ export default function TaskDetails(props) {
         ).then(
             success => {
                 console.log(success);
-                let uploadedFile= Object.assign({},
+                let uploadedFile = Object.assign({},
                     {
                         uid: -(files.length),
                         name: success.data?.original_filename,
@@ -216,7 +215,7 @@ export default function TaskDetails(props) {
                         format: success.data?.format,
                         id: success.data?._id
                     });
-                setFiles([...files,uploadedFile]);
+                setFiles([...files, uploadedFile]);
                 onSuccess(uploadedFile);
             } // Handle the success response object
         ).catch(
@@ -227,27 +226,27 @@ export default function TaskDetails(props) {
         );
     }
 
-    function handleFileRemove(data){
-       // console.log(data);
-       if('id' in data){
-           Delete(`upload/${data.id}`)
-               .then(response=>{
-                   message.success(response.message);
-                   setFiles(files.filter(f=>(f.id !== data.id)));
-               })
-               .catch(error=>{
-                   message.error('Error occurred while deleting image');
-                   console.log(error);
-               })
-       }
+    function handleFileRemove(data) {
+        // console.log(data);
+        if ('id' in data) {
+            Delete(`upload/${data.id}`)
+                .then(response => {
+                    message.success(response.message);
+                    setFiles(files.filter(f => (f.id !== data.id)));
+                })
+                .catch(error => {
+                    message.error('Error occurred while deleting image');
+                    console.log(error);
+                })
+        }
 
     }
 
-    function handleFileChange(fileLists){
-        if(fileLists.file.status === 'done'){
+    function handleFileChange(fileLists) {
+        if (fileLists.file.status === 'done') {
             const {file} = fileLists;
-            file.name = file.response.data.original_filename;
-            file.url = file.response.data.secure_url;
+            file.name = file.response.data.name;
+            file.url = file.response.data.thumbUrl;
             file.id = file.response.data.id;
         }
     }
@@ -262,7 +261,7 @@ export default function TaskDetails(props) {
                           onFinishFailed={onFinishFailed}
                     >
                         <h2>Task Details</h2>
-                        <Card style={{borderColor: "#1890ff"}}>
+                        <Card >
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <Form.Item
@@ -359,7 +358,7 @@ export default function TaskDetails(props) {
                     </Form>
                 </Col>
                 <Col span={10} offset={1}>
-                    <Tabs onChange={callback} style={{margin:0}}>
+                    <Tabs onChange={callback} style={{margin: 0}}>
                         <Tabs.TabPane tab="Sub Tasks" key="1" style={{borderColor: "#1890ff"}}>
                             {/*subtask*/}
                             <Card>

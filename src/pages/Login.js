@@ -22,7 +22,7 @@ export default function Login(props) {
         <Row style={{display: 'flex', alignItems: 'center', height: '100vh',backgroundColor:'#f5f5f5'}}>
             <Col lg={{span:6,offset:9}} md={{span:12,offset:6}} xs={{span:16,offset:4}} sm={{span:12,offset:6}}>
                 <h1 style={{textAlign:"center"}}>Task Manager</h1>
-                <Card title="Login" hoverable style={{borderColor:"#1890ff"}}>
+                <Card title="Login" hoverable>
                     <Form
                         name="normal_login"
                         className="login-form"
