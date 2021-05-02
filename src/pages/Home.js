@@ -8,7 +8,7 @@ import {AuthContext} from "../context-provider/userContext";
 
 export default function Home(props) {
     const auth = useContext(AuthContext);
-    const [modeEdit,setModeEdit] = React.useState(null);
+    const [modeEdit, setModeEdit] = React.useState(null);
     const [form] = Form.useForm();
     const [visible, setvisible] = React.useState(false);
 
@@ -38,7 +38,7 @@ export default function Home(props) {
         get("task")
             .then(response => {
                 console.log(response);
-                setTasks(response.filter(task=> task.status === 0));
+                setTasks(response.filter(task => task.status === 0));
             }).catch(error => {
             console.log(error);
         });
@@ -50,11 +50,11 @@ export default function Home(props) {
 
     }, []);
 
-    const refreshTaskList = () =>{
+    const refreshTaskList = () => {
         get("task")
             .then(response => {
                 console.log(response);
-                setTasks(response.filter(task=> task.status === 0));
+                setTasks(response.filter(task => task.status === 0));
             }).catch(error => {
             console.log(error);
         });
@@ -63,9 +63,9 @@ export default function Home(props) {
     const onFinish = (values) => {
         console.log('Success:', values);
 
-        if(modeEdit !== null){
+        if (modeEdit !== null) {
 
-            put('task/'+modeEdit._id, {
+            put('task/' + modeEdit._id, {
                 "name": values.name,
                 "category": values.category.split("|")[0],
                 "description": values.description,
@@ -90,7 +90,7 @@ export default function Home(props) {
                 message.error('Error Occurred while updating task');
 
             });
-        }else{
+        } else {
             post('task', {
                 "name": values.name,
                 "category": values.category.split("|")[0],
@@ -99,7 +99,8 @@ export default function Home(props) {
                 "reminderDate": values.reminderDate,
                 "status": 0,
                 "assignedBy": auth.user.id,
-                "assignedTo": values.assignedTo.split("|")[0]
+                "assignedTo": values.assignedTo.split("|")[0],
+                "subTasks":[]
             }).then(response => {
                     console.log(response);
                     message.success('Task add success');
@@ -123,7 +124,7 @@ export default function Home(props) {
     const showDrawer = () => {
         setvisible(true)
         form.setFieldsValue({
-            assignedBy:auth.user.username
+            assignedBy: auth.user.username
         })
     };
 
@@ -133,7 +134,7 @@ export default function Home(props) {
         form.resetFields();
     };
 
-    function handleViewClick(id){
+    function handleViewClick(id) {
         console.log(id);
         history.push(`/task/${id}`);
     }
@@ -142,8 +143,8 @@ export default function Home(props) {
         console.log(task);
         form.setFieldsValue({
             name: task.name,
-            category: task.category._id+"|"+task.category.name,
-            assignedTo: task.assignedTo._id+"|"+task.assignedTo.username,
+            category: task.category._id + "|" + task.category.name,
+            assignedTo: task.assignedTo._id + "|" + task.assignedTo.username,
             dueDate: moment(task.dueDate),
             reminderDate: moment(task.reminderDate),
             description: task.description
@@ -171,9 +172,9 @@ export default function Home(props) {
         });
     }
 
-    function handleResolveClick(task){
+    function handleResolveClick(task) {
         console.log(task);
-        put('task/'+task._id, {
+        put('task/' + task._id, {
             "status": 1,
         }).then(response => {
                 console.log(response);
@@ -206,7 +207,8 @@ export default function Home(props) {
 
                     </Row>
                 </Col>
-            </Row></Spin>
+            </Row>
+            </Spin>
             <Drawer
                 title={modeEdit !== null ? 'Update Task' : 'Create New Task'}
                 width={720}
@@ -310,7 +312,7 @@ export default function Home(props) {
                     <Row gutter={16}>
                         <Col span={4}>
                             <Form.Item>
-                                <Button type="primary" loading={isLoading} style={{marginTop:20}} htmlType="submit">
+                                <Button type="primary" loading={isLoading} style={{marginTop: 20}} htmlType="submit">
                                     {modeEdit !== null ? 'Update' : 'Save'}
                                 </Button>
                             </Form.Item>
