@@ -5,6 +5,7 @@ import Task from "../components/Task";
 import moment from "moment";
 import {useHistory} from 'react-router-dom';
 import {AuthContext} from "../context-provider/userContext";
+import './css/Home.css';
 
 export default function Home(props) {
     const auth = useContext(AuthContext);
@@ -211,7 +212,7 @@ export default function Home(props) {
             </Spin>
             <Drawer
                 title={modeEdit !== null ? 'Update Task' : 'Create New Task'}
-                width={720}
+                width={"50vw"}
                 onClose={onClose}
                 visible={visible}
                 bodyStyle={{paddingBottom: 80}}

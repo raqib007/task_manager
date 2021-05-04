@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState, useRef, useContext} from 'react';
 import {Row, Col,Card, Form, Input, Button, message, Table, Popconfirm, Modal} from "antd";
 import {DeleteTwoTone,EditTwoTone} from '@ant-design/icons';
-import { FormInstance } from 'antd/lib/form';
+import './css/category.css';
 
 const EditableContext = createContext(null);
 
@@ -105,7 +105,7 @@ export default class EditableTable extends React.Component {
             {
                 title: 'categories',
                 dataIndex: 'name',
-                width: "70%",
+                width: "60%",
                 editable: true
             },
             {
@@ -309,7 +309,7 @@ export default class EditableTable extends React.Component {
         return (
             <>
                 <Row>
-                    <Col span={16} offset={4}>
+                    <Col lg={{span:16,offset:4}} md={{span:20,offset:2}} sm={{span:22, offset:1}} xs={{span:24}}>
                         <Card style={{overflowY:'scroll',height: "calc( 100vh - 142px)"}}>
                         <div>
                             <Button

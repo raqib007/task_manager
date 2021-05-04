@@ -15,7 +15,7 @@ export default function Task(props) {
     }
 
     return (
-        <Col span={4}>
+        <Col lg={{span:6}} md={{span:8}} sm={{span:12}} xs={{span:24}}>
             <Card loading={props.isLoading}
                   hoverable
                   title={props.task.name}

@@ -254,14 +254,14 @@ export default function TaskDetails(props) {
     return (
         <Spin spinning={isLoading}>
             <Row style={{overflowY: "scroll", height: "calc(100vh - 151px)"}}>
-                <Col span={10} offset={2}>
+                <Col lg={{span:10,offset:2}} md={{span:11,offset:1}} sm={{span:24}} xs={{span:24}}>
                     <Form layout="vertical"
                           form={form}
                           onFinish={onFinish}
                           onFinishFailed={onFinishFailed}
                     >
                         <h2>Task Details</h2>
-                        <Card >
+                        <Card>
                             <Row gutter={16}>
                                 <Col span={12}>
                                     <Form.Item
@@ -340,24 +340,29 @@ export default function TaskDetails(props) {
                                 </Col>
                             </Row>
                             <Row gutter={16}>
-                                <Col span={8}>
+                                <Col span={24} style={{display:"flex", justifyContent:"flex-end"}}>
                                     <Form.Item>
-                                        <Button type="primary" loading={isLoading} style={{marginTop: 20}}
+                                        <Button type="primary"
+                                                loading={isLoading}
+                                                style={{marginTop: 20}}
                                                 htmlType="submit">
                                             Save
                                         </Button>
 
-                                        <Link to="/home"><Button type="default" style={{marginTop: 20, marginLeft: 10}}
-                                                                 htmlType="submit">
-                                            Back
-                                        </Button></Link>
+                                        <Link to="/home">
+                                            <Button type="default"
+                                                    style={{marginTop: 20, marginLeft: 5}}
+                                                    htmlType="submit">
+                                                Back
+                                            </Button>
+                                        </Link>
                                     </Form.Item>
                                 </Col>
                             </Row>
                         </Card>
                     </Form>
                 </Col>
-                <Col span={10} offset={1}>
+                <Col lg={{span:10,offset:1}} md={{span:11,offset:1}} sm={{span:24}} xs={{span:24}}>
                     <Tabs onChange={callback} style={{margin: 0}}>
                         <Tabs.TabPane tab="Sub Tasks" key="1" style={{borderColor: "#1890ff"}}>
                             {/*subtask*/}

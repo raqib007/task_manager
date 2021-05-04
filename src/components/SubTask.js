@@ -15,10 +15,9 @@ export default function SubTask(props) {
     return (
         <tr>
             <td>
-                {props.sl}. &nbsp;&nbsp;
-                <Checkbox checked={props.stask.status}
-                          onChange={(e)=>props.onSubTaskCheckChange(props.stask)}
-                />
+                {props.sl}.   <Checkbox checked={props.stask.status}
+                                        onChange={(e)=>props.onSubTaskCheckChange(props.stask)}
+            />&nbsp;
             </td>
             <td style={{width: "60%"}}>
                 {edit ? (<Input value={props.stask.name}
